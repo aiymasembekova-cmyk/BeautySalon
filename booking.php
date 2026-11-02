@@ -1,4 +1,30 @@
-```php
+
+<?php
+$message = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    $name = trim($_POST["clientName"]);
+    $phone = trim($_POST["phone"]);
+    $service = trim($_POST["service"]);
+    $date = trim($_POST["date"]);
+    $time = trim($_POST["time"]);
+    $comment = trim($_POST["comment"]);
+
+    if (
+        empty($name) ||
+        empty($phone) ||
+        empty($service) ||
+        empty($date) ||
+        empty($time)
+    ) {
+        $message = "Барлық міндетті өрістерді толтырыңыз!";
+    } else {
+        $message = "Құрметті " . htmlspecialchars($name) .
+                   "! Сіздің жазылу өтінішіңіз қабылданды.";
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="kk">
 <head>
@@ -84,6 +110,28 @@
             text-decoration: none;
         }
 
+        nav {
+            background: #f4c5d4;
+            padding: 17px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #642c42;
+            font-weight: bold;
+        }
+
+        footer {
+            background: #a9436b;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
         @media (max-width: 600px) {
             .container {
                 margin: 20px;
@@ -94,23 +142,31 @@
 </head>
 
 <body>
-    <header>
-        <h1>BeautySalon</h1>
-        <p>Өзіңізге күтім жасаңыз!</p>
-    </header>
+
+    <?php include 'includes/header.php'; ?>
 
     <div class="container">
+
         <h2>Қызметке жазылу</h2>
 
-        <form onsubmit="bookAppointment(event)">
+        <?php if (!empty($message)): ?>
+            <p style="text-align:center; color:#bd4772; font-weight:bold;">
+                <?= $message ?>
+            </p>
+        <?php endif; ?>
+
+        <form method="POST" action="booking.php">
+
             <label for="clientName">Аты-жөніңіз</label>
-            <input type="text" id="clientName" placeholder="Атыңызды енгізіңіз" required>
+            <input type="text" id="clientName" name="clientName"
+                   placeholder="Атыңызды енгізіңіз" required>
 
             <label for="phone">Телефон нөмірі</label>
-            <input type="tel" id="phone" placeholder="+7 700 000 00 00" required>
+            <input type="tel" id="phone" name="phone"
+                   placeholder="+7 700 000 00 00" required>
 
             <label for="service">Қызмет түрі</label>
-            <select id="service" required>
+            <select id="service" name="service" required>
                 <option value="">Қызметті таңдаңыз</option>
                 <option value="Шаш қию">Шаш қию — 3000 ₸</option>
                 <option value="Маникюр">Маникюр — 4000 ₸</option>
@@ -118,45 +174,32 @@
             </select>
 
             <label for="date">Күні</label>
-            <input type="date" id="date" required>
+            <input type="date" id="date" name="date" required>
 
             <label for="time">Уақыты</label>
-            <input type="time" id="time" required>
+            <input type="time" id="time" name="time" required>
 
             <label for="comment">Қосымша ескерту</label>
-            <textarea id="comment" placeholder="Қалауыңыз болса, жазыңыз"></textarea>
+            <textarea id="comment" name="comment"
+                      placeholder="Қалауыңыз болса, жазыңыз"></textarea>
 
             <button type="submit">Жазылуды растау</button>
+
         </form>
 
         <p class="back">
             <a href="index.php">← Басты бетке оралу</a>
         </p>
+
     </div>
 
     <script>
-        // Жазылу формасын өңдеу
-        function bookAppointment(event) {
-            event.preventDefault();
-
-            const name = document.getElementById("clientName").value;
-            const service = document.getElementById("service").value;
-            const date = document.getElementById("date").value;
-            const time = document.getElementById("time").value;
-
-            alert(
-                "Құрметті " + name + "!\n" +
-                "Қызмет: " + service + "\n" +
-                "Күні: " + date + "\n" +
-                "Уақыты: " + time + "\n\n" +
-                "Сіздің өтінішіңіз қабылданды!"
-            );
-        }
-
         // Өткен күндерді таңдауға жол бермеу
         document.getElementById("date").min =
             new Date().toLocaleDateString("en-CA");
     </script>
+
+    <?php include 'includes/footer.php'; ?>
+
 </body>
 </html>
-```

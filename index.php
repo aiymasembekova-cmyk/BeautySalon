@@ -166,18 +166,7 @@
 
 <body>
 
-    <header>
-        <h1>BeautySalon</h1>
-        <p>Сұлулық пен күтім әлеміне қош келдіңіз!</p>
-    </header>
-
-    <nav>
-        <a href="index.php">Басты бет</a>
-        <a href="#services">Қызметтер</a>
-        <a href="login.php">Кіру / Тіркелу</a>
-        <a href="booking.php">Жазылу</a>
-    </nav>
-
+    <?php include 'includes/header.php'; ?>
     <section class="hero">
         <h2>Өзіңізге күтім жасаңыз!</h2>
 
@@ -227,9 +216,7 @@
         <a class="button" href="booking.php">Қазір жазылу</a>
     </section>
 
-    <footer>
-        <p>BeautySalon © 2026. Барлық құқықтар қорғалған.</p>
-    </footer>
+    <?php include 'includes/footer.php'; ?>
 
 </body>
 </html>
