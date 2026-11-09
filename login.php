@@ -1,21 +1,43 @@
-```php
+<?php
+session_start();
+require_once 'includes/db.php';
+
+$message = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+    $stmt->execute([':email' => $email]);
+
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user && password_verify($password, $user['password'])) {
+        session_regenerate_id(true);
+
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_name'] = $user['name'];
+
+        header('Location: index.php');
+        exit;
+    } else {
+        $message = "Email немесе пароль қате!";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="kk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Жүйеге кіру | BeautySalon</title>
-
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
-            margin: 0;
-            font-family: Arial, sans-serif;
+            font-family: Arial;
             background: #fff0f5;
             color: #4a2535;
+            margin: 0;
         }
 
         header {
@@ -31,89 +53,62 @@
             padding: 30px;
             background: white;
             border-radius: 18px;
-            box-shadow: 0 5px 20px #e9b6c8;
-        }
-
-        h2 {
-            text-align: center;
         }
 
         input {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
-            border: 1px solid #e5b5c5;
-            border-radius: 8px;
+            box-sizing: border-box;
         }
 
         button {
             width: 100%;
             padding: 13px;
-            margin-top: 10px;
             background: #d95f8a;
             color: white;
             border: none;
-            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
         }
 
-        button:hover {
-            background: #bd4772;
-        }
-
-        .back {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        a {
+        .message {
             color: #bd4772;
-            text-decoration: none;
+            text-align: center;
         }
     </style>
 </head>
-
 <body>
-    <header>
-        <h1>BeautySalon</h1>
-        <p>Сұлулық пен күтім әлемі</p>
-    </header>
 
-    <div class="container">
-        <h2>Жүйеге кіру</h2>
+<header>
+    <h1>BeautySalon</h1>
+    <p>Сұлулық пен күтім әлемі</p>
+</header>
 
-        <form onsubmit="login(event)">
-            <input type="email" id="email" placeholder="Электрондық пошта" required>
-            <input type="password" id="password" placeholder="Құпиясөз" required>
-            <button type="submit">Кіру</button>
-        </form>
+<div class="container">
+    <h2>Жүйеге кіру</h2>
 
-        <h2>Тіркелу</h2>
-
-        <form onsubmit="register(event)">
-            <input type="text" id="name" placeholder="Аты-жөніңіз" required>
-            <input type="email" id="newEmail" placeholder="Электрондық пошта" required>
-            <input type="password" id="newPassword" placeholder="Құпиясөз" required>
-            <button type="submit">Тіркелу</button>
-        </form>
-
-        <p class="back">
-            <a href="index.php">← Басты бетке оралу</a>
+    <?php if ($message): ?>
+        <p class="message">
+            <?= htmlspecialchars($message) ?>
         </p>
-    </div>
+    <?php endif; ?>
 
-    <script>
-        function login(event) {
-            event.preventDefault();
-            alert("Жүйеге кіру формасы толтырылды!");
-        }
+    <form method="POST" action="login.php">
+        <input type="email" name="email"
+               placeholder="Электрондық пошта" required>
 
-        function register(event) {
-            event.preventDefault();
-            alert("Тіркелу формасы толтырылды!");
-        }
-    </script>
+        <input type="password" name="password"
+               placeholder="Құпиясөз" required>
+
+        <button type="submit">Кіру</button>
+    </form>
+
+    <p>Аккаунтыңыз жоқ па?
+        <a href="register.php">Тіркелу</a>
+    </p>
+
+    <p><a href="index.php">Басты бетке оралу</a></p>
+</div>
+
 </body>
 </html>
-```

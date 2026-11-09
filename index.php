@@ -37,6 +37,11 @@
             justify-content: center;
             flex-wrap: wrap;
             gap: 25px;
+
+              /* Мәзірді экранның жоғарғы жағына бекіту */
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         nav a {
