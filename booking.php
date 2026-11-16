@@ -1,4 +1,3 @@
-
 <?php
 require_once 'auth.php';
 
@@ -28,29 +27,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-    $name = trim($_POST["clientName"]);
-    $phone = trim($_POST["phone"]);
-    $service = trim($_POST["service"]);
-    $date = trim($_POST["date"]);
-    $time = trim($_POST["time"]);
-    $comment = trim($_POST["comment"]);
-
-    if (
-        empty($name) ||
-        empty($phone) ||
-        empty($service) ||
-        empty($date) ||
-        empty($time)
-    ) {
-        $message = "Барлық міндетті өрістерді толтырыңыз!";
-    } else {
-        $message = "Құрметті " . htmlspecialchars($name) .
-                   "! Сіздің жазылу өтінішіңіз қабылданды.";
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="kk">
 <head>
