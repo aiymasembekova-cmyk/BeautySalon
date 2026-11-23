@@ -6,9 +6,9 @@ $message = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $name = trim($_POST['name']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
 
     if ($name === '' || $email === '' || $password === '') {
         $message = "Барлық өрістерді толтырыңыз!";
@@ -21,9 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Парольді қауіпсіз хэштеу
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-            // Пайдаланушыны дерекқорға сақтау
-            $sql = "INSERT INTO users (name, email, password)
-                    VALUES (:name, :email, :password)";
+            // Жаңа қолданушыға автоматты түрде user рөлін беру
+            $sql = "INSERT INTO users (name, email, password, role)
+                    VALUES (:name, :email, :password, 'user')";
 
             $stmt = $pdo->prepare($sql);
 
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h3>Тіркелу</h3>
 
     <?php if ($message): ?>
-        <p><?php echo htmlspecialchars($message); ?></p>
+        <p><?php echo htmlspecialchars($message, ENT_QUOTES, 'UTF-8'); ?></p>
     <?php endif; ?>
 
     <form method="POST">

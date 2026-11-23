@@ -1,3 +1,4 @@
+
 <?php
 session_start();
 require_once 'includes/db.php';
@@ -8,19 +9,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+    // Email бойынша қолданушыны іздеу
+    $stmt = $pdo->prepare(
+        "SELECT * FROM users WHERE email = :email"
+    );
     $stmt->execute([':email' => $email]);
 
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    // Парольді тексеру
     if ($user && password_verify($password, $user['password'])) {
+
         session_regenerate_id(true);
 
+        // Қолданушы мәліметтерін сессияға сақтау
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['user_name'] = $user['name'];
+        $_SESSION['role'] = $user['role'];
 
         header('Location: index.php');
         exit;
+
     } else {
         $message = "Email немесе пароль қате!";
     }
@@ -31,7 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="kk">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Жүйеге кіру | BeautySalon</title>
+
     <style>
         body {
             font-family: Arial;
@@ -89,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <?php if ($message): ?>
         <p class="message">
-            <?= htmlspecialchars($message) ?>
+            <?= htmlspecialchars($message, ENT_QUOTES, 'UTF-8') ?>
         </p>
     <?php endif; ?>
 
